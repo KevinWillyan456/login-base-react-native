@@ -32,12 +32,10 @@ Este projeto foi desenvolvido com as seguintes tecnologias:
 
 ## 📱 Screenshots
 
-<p align="center">
-  <img src="https://github.com/user-attachments/assets/c7ce257c-b081-4427-90ff-d4327bd9de28" width="250" alt="Login Screen"/>
-  <img src="https://github.com/user-attachments/assets/7f63f036-8a95-4a1a-8d35-fd854ae0ab94" width="250" alt="Signup Screen"/>
+<p style="display: flex; gap: 20px; justify-content: center;">
+  <img src="./assets/screenshots/screen-1.webp" width="250" alt="Login Screen"/>
+  <img src="./assets/screenshots/screen-2.webp" width="250" alt="Signup Screen"/>
 </p>
-
-> 📸 Adicione suas capturas de tela na pasta `assets/screenshots/`
 
 ## 📦 Instalação
 
