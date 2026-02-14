@@ -1,6 +1,5 @@
 import { Button } from '@/components/Button'
 import { Input } from '@/components/Input'
-import { isValidEmail, isValidPassword } from '@/utils/validation'
 import { Link } from 'expo-router'
 import { useState } from 'react'
 import {
@@ -13,24 +12,28 @@ import {
   Text,
   View
 } from 'react-native'
+import { z } from 'zod'
+
+const SignInSchema = z.object({
+  email: z.email({ message: 'E-mail inválido.' }),
+  password: z
+    .string()
+    .min(6, { message: 'A senha deve ter pelo menos 6 caracteres.' })
+})
 
 export default function App() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
   function handleSignIn() {
-    if (!email.trim() || !password.trim()) {
-      Alert.alert('Entrar', 'Preencha e-mail e senha para entrar.')
-      return
-    }
+    const result = SignInSchema.safeParse({ email, password })
 
-    if (isValidPassword(password) === false) {
-      Alert.alert('Entrar', 'A senha deve ter pelo menos 6 caracteres.')
-      return
-    }
-
-    if (isValidEmail(email) === false) {
-      Alert.alert('Entrar', 'E-mail inválido.')
+    if (!result.success) {
+      Alert.alert(
+        'Entrar',
+        result.error.issues[0].message +
+          ' Por favor, corrija e tente novamente.'
+      )
       return
     }
 
@@ -63,12 +66,14 @@ export default function App() {
 
           <View style={styles.form}>
             <Input
+              label="E-mail"
               placeholder="E-mail"
               keyboardType="email-address"
               onChangeText={setEmail}
             />
 
             <Input
+              label="Senha"
               placeholder="Senha"
               secureTextEntry={true}
               onChangeText={setPassword}

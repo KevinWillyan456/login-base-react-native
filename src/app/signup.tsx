@@ -1,6 +1,6 @@
 import { Button } from '@/components/Button'
 import { Input } from '@/components/Input'
-import { isValidEmail, isValidName, isValidPassword } from '@/utils/validation'
+import { isValidPassword } from '@/utils/validation'
 import { Link } from 'expo-router'
 import { useState } from 'react'
 import {
@@ -13,6 +13,17 @@ import {
   Text,
   View
 } from 'react-native'
+import { z } from 'zod'
+
+const SignUpSchema = z.object({
+  name: z
+    .string()
+    .min(2, { message: 'O nome deve ter pelo menos 2 caracteres.' }),
+  email: z.email({ message: 'E-mail inválido.' }),
+  password: z
+    .string()
+    .min(6, { message: 'A senha deve ter pelo menos 6 caracteres.' })
+})
 
 export default function SignUp() {
   const [name, setName] = useState('')
@@ -21,13 +32,14 @@ export default function SignUp() {
   const [confirmPassword, setConfirmPassword] = useState('')
 
   function handleSignUp() {
-    if (!name.trim() || !email.trim() || !password.trim()) {
-      Alert.alert('Cadastrar', 'Preencha todos os campos para cadastrar.')
-      return
-    }
+    const result = SignUpSchema.safeParse({ name, email, password })
 
-    if (isValidName(name) === false) {
-      Alert.alert('Cadastrar', 'O nome deve ter pelo menos 2 caracteres.')
+    if (!result.success) {
+      Alert.alert(
+        'Cadastrar',
+        result.error.issues[0].message +
+          ' Por favor, corrija e tente novamente.'
+      )
       return
     }
 
@@ -38,11 +50,6 @@ export default function SignUp() {
 
     if (password !== confirmPassword) {
       Alert.alert('Cadastrar', 'As senhas não coincidem.')
-      return
-    }
-
-    if (isValidEmail(email) === false) {
-      Alert.alert('Cadastrar', 'E-mail inválido.')
       return
     }
 
@@ -71,18 +78,21 @@ export default function SignUp() {
           <Text style={styles.subtitle}>Crie sua conta para acessar.</Text>
 
           <View style={styles.form}>
-            <Input placeholder="Nome" onChangeText={setName} />
+            <Input label="Nome" placeholder="Nome" onChangeText={setName} />
             <Input
+              label="E-mail"
               placeholder="E-mail"
               keyboardType="email-address"
               onChangeText={setEmail}
             />
             <Input
+              label="Senha"
               placeholder="Senha"
               secureTextEntry={true}
               onChangeText={setPassword}
             />
             <Input
+              label="Confirmar Senha"
               placeholder="Confirmar Senha"
               secureTextEntry={true}
               onChangeText={setConfirmPassword}
